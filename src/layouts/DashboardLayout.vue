@@ -10,11 +10,19 @@
       <!-- Sidebar Header -->
       <div class="flex items-center justify-between h-16 px-4 border-b border-slate-800 bg-slate-900/50">
         <div class="flex items-center gap-2" v-if="isSidebarOpen">
+<<<<<<< HEAD
           <img src="/logo.png" alt="شعار معارف سجادية" class="w-8 h-8 object-contain" />
           <span class="font-extrabold text-md bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent">معارف سجادية</span>
         </div>
         <div class="flex items-center justify-center w-full" v-else>
           <img src="/logo.png" alt="شعار معارف سجادية" class="w-8 h-8 object-contain" />
+=======
+          <span class="text-2xl">🕌</span>
+          <span class="font-extrabold text-lg bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent">معارف سجادة</span>
+        </div>
+        <div class="flex items-center justify-center w-full" v-else>
+          <span class="text-2xl">🕌</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
         </div>
         
         <!-- Toggle button on Desktop -->
@@ -144,6 +152,11 @@ const links = [
   { name: 'الاختبارات والأسئلة', routeName: 'Quizzes', icon: HelpCircle, requiresSuper: false },
   { name: 'الخدمات والمعالم', routeName: 'Amenities', icon: Stethoscope, requiresSuper: false },
   { name: 'المحتوى الديني', routeName: 'ReligiousContent', icon: BookOpen, requiresSuper: false },
+<<<<<<< HEAD
+=======
+  { name: 'دليل المسابقات', routeName: 'Guides', icon: Award, requiresSuper: false },
+  { name: 'بنرات الصفحة الرئيسية', routeName: 'Banners', icon: Image, requiresSuper: false },
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
   { name: 'إدارة المستخدمين', routeName: 'Users', icon: Users, requiresSuper: false },
   { name: 'إرسال الإشعارات', routeName: 'Notifications', icon: Bell, requiresSuper: false },
   { name: 'رفع الوسائط والملفات', routeName: 'Media', icon: FolderOpen, requiresSuper: false },

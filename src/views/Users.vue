@@ -2,8 +2,13 @@
   <div class="space-y-8 font-sans">
     <!-- Header Page -->
     <div>
+<<<<<<< HEAD
       <h2 class="text-xl font-bold text-white">إدارة الزائرين والمستخدمين</h2>
       <p class="text-slate-400 text-sm">استعرض بيانات الزائرين المسجلين، نقاطهم، إنجازاتهم، وتحكم في حساباتهم.</p>
+=======
+      <h2 class="text-xl font-bold text-white">إدارة الحجاج والمستخدمين</h2>
+      <p class="text-slate-400 text-sm">استعرض بيانات الحجاج المسجلين، نقاطهم، إنجازاتهم، وتحكم في حساباتهم.</p>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
     </div>
 
     <!-- Filters, Search and Pagination controls -->
@@ -12,7 +17,11 @@
         <input
           v-model="searchQuery"
           type="text"
+<<<<<<< HEAD
           placeholder="ابحث باسم الزائر، الهاتف أو البريد الإلكتروني..."
+=======
+          placeholder="ابحث باسم الحاج، الهاتف أو البريد الإلكتروني..."
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
           class="w-full pl-3 pr-10 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-slate-100 text-sm"
         />
         <Search class="absolute right-3 top-3 w-4.5 h-4.5 text-slate-500" />
@@ -41,7 +50,11 @@
     <!-- Loading spinner -->
     <div v-if="usersStore.loading" class="flex flex-col items-center justify-center py-16 space-y-4">
       <Loader2 class="w-8 h-8 animate-spin text-primary-500" />
+<<<<<<< HEAD
       <span class="text-slate-500 text-sm">جاري تحميل سجلات الزائرين...</span>
+=======
+      <span class="text-slate-500 text-sm">جاري تحميل سجلات الحجاج...</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
     </div>
 
     <!-- Users Table -->
@@ -71,11 +84,16 @@
                   {{ user.fullName.charAt(0) }}
                 </div>
                 <div>
+<<<<<<< HEAD
                   <span class="font-bold text-white flex items-center gap-1.5">
                     {{ user.fullName }}
                     <span v-if="isUserActive(user.lastActiveAt)" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" title="نشط الآن"></span>
                   </span>
                   <span class="text-xs text-slate-550 font-medium">معرف: #{{ user.userId }} | رتبة: {{ user.roleName }}</span>
+=======
+                  <span class="font-bold text-white block">{{ user.fullName }}</span>
+                  <span class="text-xs text-slate-500 font-medium">معرف: #{{ user.userId }} | رتبة: {{ user.roleName }}</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
                 </div>
               </td>
               <td class="py-4">{{ user.email || 'غير متوفر' }}</td>
@@ -95,7 +113,11 @@
               </td>
             </tr>
             <tr v-if="filteredUsers.length === 0">
+<<<<<<< HEAD
               <td colspan="7" class="py-8 text-center text-slate-500">لا يوجد زائرين مطابقين لبيانات البحث الحالية.</td>
+=======
+              <td colspan="7" class="py-8 text-center text-slate-500">لا يوجد حجاج مطابقين لبيانات البحث الحالية.</td>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
             </tr>
           </tbody>
         </table>
@@ -106,7 +128,11 @@
     <div v-if="detailsModal.show" class="fixed inset-0 bg-black/75 z-30 flex items-center justify-center p-4">
       <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
         <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+<<<<<<< HEAD
           <h3 class="text-lg font-bold text-white">تفاصيل ملف الزائر</h3>
+=======
+          <h3 class="text-lg font-bold text-white">تفاصيل ملف الحاج</h3>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
           <button @click="detailsModal.show = false" class="p-1 text-slate-500 hover:text-slate-300 rounded-lg">
             <X class="w-5 h-5" />
           </button>
@@ -129,7 +155,11 @@
               <strong class="text-slate-200">{{ detailsModal.user.email || 'غير مسجل' }}</strong>
             </div>
             <div class="p-3 rounded-xl bg-slate-900 border border-slate-800/40">
+<<<<<<< HEAD
               <span class="text-xs text-slate-550 block mb-1">رقم الهاتف</span>
+=======
+              <span class="text-xs text-slate-500 block mb-1">رقم الهاتف</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
               <strong class="text-slate-200" dir="ltr">{{ detailsModal.user.phoneNumber || 'غير مسجل' }}</strong>
             </div>
             <div class="p-3 rounded-xl bg-slate-900 border border-slate-800/40">
@@ -140,6 +170,7 @@
               <span class="text-xs text-slate-500 block mb-1">المدينة</span>
               <strong class="text-slate-200">{{ detailsModal.user.city }}</strong>
             </div>
+<<<<<<< HEAD
             <div class="p-3 rounded-xl bg-slate-900 border border-slate-800/40">
               <span class="text-xs text-slate-500 block mb-1">دور المستخدم (الرتبة)</span>
               <span class="px-2 py-0.5 text-xs font-bold rounded bg-indigo-500/10 text-indigo-400 inline-block">
@@ -163,10 +194,16 @@
             <div class="p-3 rounded-xl bg-slate-900 border border-slate-800/40 col-span-2 flex items-center justify-between">
               <div>
                 <span class="text-xs text-slate-550 block mb-1">إجمالي النقاط المكتسبة</span>
+=======
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800/40 col-span-2 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-slate-500 block mb-1">إجمالي النقاط المكتسبة</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
                 <strong class="text-emerald-400 text-lg font-black">{{ detailsModal.user.totalPoints }} نقطة</strong>
               </div>
               <Award class="w-8 h-8 text-emerald-500/30" />
             </div>
+<<<<<<< HEAD
 
             <!-- Completed Rights Section -->
             <div class="col-span-2 border-t border-slate-800/60 pt-4 space-y-3">
@@ -225,6 +262,8 @@
               </div>
             </div>
 
+=======
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
           </div>
         </div>
       </div>
@@ -233,7 +272,11 @@
     <!-- Edit User Modal -->
     <div v-if="editModal.show" class="fixed inset-0 bg-black/75 z-30 flex items-center justify-center p-4">
       <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+<<<<<<< HEAD
         <h3 class="text-lg font-bold text-white">تعديل بيانات الزائر</h3>
+=======
+        <h3 class="text-lg font-bold text-white">تعديل بيانات الحاج</h3>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
 
         <form @submit.prevent="submitEdit" class="space-y-4">
           <div>
@@ -276,7 +319,10 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useUsersStore } from '@/stores/users'
+<<<<<<< HEAD
 import axiosInstance from '@/api/axiosInstance'
+=======
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
 import { Search, ChevronLeft, ChevronRight, Edit3, UserX, X, Loader2, Award } from 'lucide-vue-next'
 
 const usersStore = useUsersStore()
@@ -291,12 +337,15 @@ const detailsModal = reactive({
   user: null
 })
 
+<<<<<<< HEAD
 const userProgress = ref([])
 const loadingProgress = ref(false)
 
 const userQuizzes = ref([])
 const loadingQuizzes = ref(false)
 
+=======
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
 const editModal = reactive({
   show: false,
   userId: null,
@@ -341,6 +390,7 @@ const filteredUsers = computed(() => {
   })
 })
 
+<<<<<<< HEAD
 const viewUserDetails = async (user) => {
   detailsModal.user = user
   detailsModal.show = true
@@ -366,6 +416,11 @@ const viewUserDetails = async (user) => {
   } finally {
     loadingQuizzes.value = false
   }
+=======
+const viewUserDetails = (user) => {
+  detailsModal.user = user
+  detailsModal.show = true
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
 }
 
 const openEditModal = (user) => {
@@ -417,6 +472,7 @@ const formatDateOnly = (dateStr) => {
   const d = new Date(dateStr)
   return d.toISOString().split('T')[0]
 }
+<<<<<<< HEAD
 
 const formatDateTime = (dateStr) => {
   if (!dateStr) return '-'
@@ -449,4 +505,6 @@ const formatLastActive = (lastActiveStr) => {
     minute: '2-digit'
   })
 }
+=======
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
 </script>

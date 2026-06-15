@@ -2,7 +2,11 @@ import axios from 'axios'
 import router from '@/router'
 
 const axiosInstance = axios.create({
+<<<<<<< HEAD
   baseURL: import.meta.env.VITE_API_URL || 'https://maarif-api.imamzain.org',
+=======
+  baseURL: import.meta.env.VITE_API_URL || 'https://localhost:7091',
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,6 +28,7 @@ axiosInstance.interceptors.request.use(
   }
 )
 
+<<<<<<< HEAD
 // Response Interceptor: Global Error Handling & Automatic Token Refresh
 let isRefreshing = false
 let failedQueue = []
@@ -124,6 +129,22 @@ axiosInstance.interceptors.response.use(
     } else if (status === 401) {
       // If we got 401 on login or refresh itself, clean up and redirect
       handleLogoutAndRedirect()
+=======
+// Response Interceptor: Global Error Handling
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response ? error.response.status : null
+
+    if (status === 401) {
+      // Unauthorized: Clear tokens and redirect to login
+      localStorage.removeItem('token')
+      localStorage.removeItem('refreshToken')
+      localStorage.removeItem('user')
+      if (router.currentRoute.value.path !== '/login') {
+        router.push('/login')
+      }
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
     } else if (status === 403) {
       // Forbidden: Insufficient roles
       alert('عذراً، لا تمتلك الصلاحية الكافية للوصول إلى هذا الجزء.')

@@ -4,7 +4,11 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-white">إدارة المحتوى الديني العام</h2>
+<<<<<<< HEAD
         <p class="text-slate-400 text-sm">تحكم في نصوص الزيارات، الأدعية العامة، والمقاطع الصوتية المتوفرة لعامة الزائرين بالتطبيق.</p>
+=======
+        <p class="text-slate-400 text-sm">تحكم في نصوص الزيارات، الأدعية العامة، والمقاطع الصوتية المتوفرة لعامة الحجاج بالتطبيق.</p>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
       </div>
       <button
         @click="openModal(null)"

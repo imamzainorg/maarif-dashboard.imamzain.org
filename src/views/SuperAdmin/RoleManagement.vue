@@ -29,7 +29,11 @@
         <form @submit.prevent="handleAssignRole" class="space-y-5">
           <!-- Target User ID -->
           <div>
+<<<<<<< HEAD
             <label class="block text-slate-300 text-sm font-semibold mb-2">رقم معرّف الزائر المستهدف (User ID)</label>
+=======
+            <label class="block text-slate-300 text-sm font-semibold mb-2">رقم معرّف الحاج المستهدف (User ID)</label>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
             <div class="flex gap-2">
               <input
                 v-model.number="assignForm.targetUserId"

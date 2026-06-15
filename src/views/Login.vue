@@ -8,9 +8,15 @@
     <div class="w-full max-w-md glass-panel p-8 rounded-2xl shadow-2xl relative z-10 border border-slate-800 animate-slide-up">
       <!-- Title & Branding -->
       <div class="text-center mb-8">
+<<<<<<< HEAD
         <img src="/logo.png" alt="شعار معارف سجادية" class="w-16 h-16 mx-auto mb-4 object-contain" />
         <h2 class="text-2xl font-black bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent mb-1">
           لوحة التحكم - معارف سجادية
+=======
+        <span class="text-5xl block mb-3">🕌</span>
+        <h2 class="text-2xl font-black bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent mb-1">
+          لوحة التحكم - معارف سجادة
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
         </h2>
         <p class="text-slate-400 text-sm">أدخل معلومات حساب الإدارة لتسجيل الدخول</p>
       </div>

@@ -4,7 +4,11 @@
     <div class="p-6 rounded-2xl bg-gradient-to-l from-slate-900 via-slate-900 to-primary-950/20 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <h2 class="text-2xl font-bold text-white mb-1">مرحباً بك مجدداً، {{ authStore.user?.fullName }} 👋</h2>
+<<<<<<< HEAD
         <p class="text-slate-400 text-sm">هذه نظرة عامة على حالة تطبيق معارف سجادية وحركة المستخدمين الحالية.</p>
+=======
+        <p class="text-slate-400 text-sm">هذه نظرة عامة على حالة تطبيق معارف سجادة وحركة المستخدمين الحالية.</p>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
       </div>
       <div class="flex items-center gap-2">
         <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping"></span>
@@ -14,6 +18,7 @@
 
     <!-- Quick stats grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<<<<<<< HEAD
       <!-- Active Visitors Card (Last 2 Hours) -->
       <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
         <div class="flex items-center justify-between">
@@ -28,6 +33,22 @@
         <div class="mt-4 text-slate-450 text-xs flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
           <span>تحديث تلقائي من سجل النشاط</span>
+=======
+      <!-- Stations Card -->
+      <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-slate-400 text-xs font-bold mb-1">المحطات النشطة</p>
+            <h3 class="text-3xl font-black text-white">{{ stats.stations }}</h3>
+          </div>
+          <div class="p-3 bg-primary-600/10 text-primary-400 rounded-xl group-hover:scale-110 transition-transform">
+            <MapPin class="w-6 h-6" />
+          </div>
+        </div>
+        <div class="mt-4 text-slate-400 text-xs flex items-center gap-1">
+          <BookOpen class="w-4 h-4 text-slate-500" />
+          <span>{{ stats.dhikrs }} ذكر/دعاء مسجل</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
         </div>
       </div>
 
@@ -35,7 +56,11 @@
       <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
         <div class="flex items-center justify-between">
           <div>
+<<<<<<< HEAD
             <p class="text-slate-400 text-xs font-bold mb-1">الزائرين المسجلين</p>
+=======
+            <p class="text-slate-400 text-xs font-bold mb-1">الحجاج المسجلين</p>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
             <h3 class="text-3xl font-black text-white">{{ stats.users }}</h3>
           </div>
           <div class="p-3 bg-emerald-600/10 text-emerald-400 rounded-xl group-hover:scale-110 transition-transform">
@@ -108,7 +133,11 @@
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <Users class="w-5 h-5 text-emerald-400" />
+<<<<<<< HEAD
             <span>الزائرين المسجلين مؤخراً</span>
+=======
+            <span>الحجاج المسجلين مؤخراً</span>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
           </h3>
           <RouterLink :to="{ name: 'Users' }" class="text-xs text-primary-400 hover:text-primary-300 font-bold">عرض الكل</RouterLink>
         </div>
@@ -136,7 +165,11 @@
                 <td class="py-3.5 font-bold text-emerald-400">{{ user.totalPoints }}</td>
               </tr>
               <tr v-if="recentUsers.length === 0">
+<<<<<<< HEAD
                 <td colspan="4" class="py-8 text-center text-slate-500">لا يوجد زائرين مسجلين حالياً.</td>
+=======
+                <td colspan="4" class="py-8 text-center text-slate-500">لا يوجد حجاج مسجلين حالياً.</td>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
               </tr>
             </tbody>
           </table>
@@ -161,8 +194,12 @@ const stats = ref({
   users: 0,
   totalPoints: 0,
   amenities: 0,
+<<<<<<< HEAD
   religiousContent: 0,
   activeUsers: 0
+=======
+  religiousContent: 0
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
 })
 
 const syncVersions = ref([])
@@ -204,12 +241,15 @@ onMounted(async () => {
     recentUsers.value = usersResponse.data
     stats.value.users = usersResponse.data.length > 0 ? usersResponse.data[0].userId * 3 : 15 // Mock estimation since backend has no count endpoint
     stats.value.totalPoints = usersResponse.data.reduce((acc, u) => acc + u.totalPoints, 0)
+<<<<<<< HEAD
 
     // 6. Fetch active users in last 2 hours
     const activeCountResponse = await axiosInstance.get('/api/admin/users/active-count', {
       params: { hours: 2 }
     })
     stats.value.activeUsers = activeCountResponse.data.count
+=======
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
   } catch (err) {
     console.error('Failed to load dashboard statistics', err)
   }

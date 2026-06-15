@@ -8,7 +8,11 @@
         </span>
         <div>
           <h2 class="text-xl font-bold text-white">إدارة أدلة المسابقات</h2>
+<<<<<<< HEAD
           <p class="text-slate-400 text-sm">إدارة المحتوى والمجموعات الإرشادية الخاصة بمسابقات المنصة الموجهة للزائرين.</p>
+=======
+          <p class="text-slate-400 text-sm">إدارة المحتوى والمجموعات الإرشادية الخاصة بمسابقات المنصة الموجهة للحجاج.</p>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
         </div>
       </div>
       <button
