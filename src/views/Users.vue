@@ -1,9 +1,20 @@
 <template>
   <div class="space-y-8 font-sans">
     <!-- Header Page -->
-    <div>
-      <h2 class="text-xl font-bold text-white">إدارة الزائرين والمستخدمين</h2>
-      <p class="text-slate-400 text-sm">استعرض بيانات الزائرين المسجلين، نقاطهم، إنجازاتهم، وتحكم في حساباتهم.</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-bold text-white">إدارة الزائرين والمستخدمين</h2>
+        <p class="text-slate-400 text-sm">استعرض بيانات الزائرين المسجلين، نقاطهم، إنجازاتهم، وتحكم في حساباتهم.</p>
+      </div>
+      <div>
+        <button
+          @click="openAddModal"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 text-white font-bold text-sm shadow-lg shadow-primary-600/20 hover:bg-primary-500 transition-all duration-200 hover:-translate-y-0.5"
+        >
+          <UserPlus class="w-4.5 h-4.5" />
+          <span>إضافة زائر جديد</span>
+        </button>
+      </div>
     </div>
 
     <!-- Filters, Search and Pagination controls -->
@@ -269,6 +280,121 @@
         </form>
       </div>
     </div>
+
+    <!-- Add User Modal -->
+    <div v-if="addModal.show" class="fixed inset-0 bg-black/75 z-30 flex items-center justify-center p-4">
+      <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <h3 class="text-lg font-bold text-white">إضافة زائر جديد</h3>
+          <button type="button" @click="addModal.show = false" class="p-1 text-slate-500 hover:text-slate-300 rounded-lg">
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+
+        <!-- Error display inside modal -->
+        <div v-if="addModal.error" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
+          <span>⚠️</span>
+          <span>{{ addModal.error }}</span>
+        </div>
+
+        <form @submit.prevent="submitAdd" class="space-y-4">
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-1.5">الاسم الكامل <span class="text-rose-500">*</span></label>
+            <input
+              v-model="addModal.form.fullName"
+              type="text"
+              required
+              placeholder="مثال: محمد علي أحمد"
+              class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-300 text-sm font-semibold mb-1.5">تاريخ الميلاد <span class="text-rose-500">*</span></label>
+              <input
+                v-model="addModal.form.birthDate"
+                type="date"
+                required
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+              />
+            </div>
+            <div>
+              <label class="block text-slate-300 text-sm font-semibold mb-1.5">المدينة <span class="text-rose-500">*</span></label>
+              <input
+                v-model="addModal.form.city"
+                type="text"
+                required
+                placeholder="مثال: كربلاء"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-300 text-sm font-semibold mb-1.5">رقم الهاتف <span class="text-rose-500">*</span></label>
+              <input
+                v-model="addModal.form.phoneNumber"
+                type="text"
+                required
+                placeholder="مثال: 07701234567"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+              />
+            </div>
+            <div>
+              <label class="block text-slate-300 text-sm font-semibold mb-1.5">البريد الإلكتروني (اختياري)</label>
+              <input
+                v-model="addModal.form.email"
+                type="email"
+                placeholder="example@mail.com"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-1.5">كلمة المرور <span class="text-rose-500">*</span></label>
+            <div class="relative">
+              <input
+                v-model="addModal.form.password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                minlength="6"
+                placeholder="لا تقل عن 6 أحرف أو أرقام"
+                class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+              />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute left-3 top-3 text-slate-500 hover:text-slate-300"
+              >
+                <component :is="showPassword ? EyeOff : Eye" class="w-4.5 h-4.5" />
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <button
+              type="button"
+              @click="addModal.show = false"
+              :disabled="addModal.loading"
+              class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm disabled:opacity-50"
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              :disabled="addModal.loading"
+              class="px-5 py-2 rounded-xl bg-primary-600 text-white font-bold text-sm shadow-md shadow-primary-600/15 disabled:opacity-50 flex items-center gap-2"
+            >
+              <Loader2 v-if="addModal.loading" class="w-4.5 h-4.5 animate-spin" />
+              <span>تسجيل وإضافة الزائر</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -276,7 +402,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useUsersStore } from '@/stores/users'
 import axiosInstance from '@/api/axiosInstance'
-import { Search, ChevronLeft, ChevronRight, Edit3, UserX, X, Loader2, Award } from 'lucide-vue-next'
+import { Search, ChevronLeft, ChevronRight, Edit3, UserX, X, Loader2, Award, UserPlus, Eye, EyeOff } from 'lucide-vue-next'
 
 const usersStore = useUsersStore()
 
@@ -295,6 +421,7 @@ const loadingProgress = ref(false)
 
 const userQuizzes = ref([])
 const loadingQuizzes = ref(false)
+
 const editModal = reactive({
   show: false,
   userId: null,
@@ -306,6 +433,22 @@ const editModal = reactive({
     phoneNumber: ''
   }
 })
+
+const addModal = reactive({
+  show: false,
+  loading: false,
+  error: null,
+  form: {
+    fullName: '',
+    birthDate: '',
+    city: '',
+    phoneNumber: '',
+    email: '',
+    password: ''
+  }
+})
+
+const showPassword = ref(false)
 
 onMounted(() => {
   loadUsers()
@@ -363,6 +506,40 @@ const viewUserDetails = async (user) => {
     console.error('Failed to load user quizzes:', err)
   } finally {
     loadingQuizzes.value = false
+  }
+}
+
+const openAddModal = () => {
+  addModal.form = {
+    fullName: '',
+    birthDate: '',
+    city: '',
+    phoneNumber: '',
+    email: '',
+    password: ''
+  }
+  addModal.error = null
+  addModal.loading = false
+  showPassword.value = false
+  addModal.show = true
+}
+
+const submitAdd = async () => {
+  addModal.loading = true
+  addModal.error = null
+  try {
+    if (addModal.form.password.length < 6) {
+      addModal.error = 'كلمة المرور يجب أن لا تقل عن 6 أحرف أو أرقام.'
+      addModal.loading = false
+      return
+    }
+    await usersStore.createUser(addModal.form)
+    addModal.show = false
+  } catch (err) {
+    console.error('Failed to create user:', err)
+    addModal.error = err.message || 'حدث خطأ أثناء محاولة إضافة الزائر.'
+  } finally {
+    addModal.loading = false
   }
 }
 

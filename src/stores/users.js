@@ -48,6 +48,42 @@ export const useUsersStore = defineStore('users', {
       }
     },
 
+    async createUser(userData) {
+      try {
+        const payload = {
+          fullName: userData.fullName,
+          birthDate: new Date(userData.birthDate).toISOString(),
+          city: userData.city,
+          phoneNumber: userData.phoneNumber,
+          email: userData.email || null,
+          password: userData.password,
+          deviceUuid: 'dashboard-created-user-session',
+          fcmToken: ''
+        }
+        const response = await axiosInstance.post('/api/Auth/register', payload)
+        
+        const newUser = {
+          userId: response.data.userId,
+          fullName: response.data.fullName,
+          email: response.data.email,
+          phoneNumber: userData.phoneNumber,
+          city: userData.city,
+          birthDate: new Date(userData.birthDate).toISOString(),
+          createdAt: new Date().toISOString(),
+          roleId: 3,
+          roleName: 'user',
+          totalPoints: 0,
+          lastActiveAt: null
+        }
+        
+        this.users.unshift(newUser)
+        this.totalCount++
+        return newUser
+      } catch (err) {
+        throw err.response?.data || err
+      }
+    },
+
     async updateUser(id, userData) {
       try {
         await axiosInstance.put(`/api/admin/users/${id}`, userData)
