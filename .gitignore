@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local env (set VITE_API_URL in Vercel's Environment Variables instead)
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.log
