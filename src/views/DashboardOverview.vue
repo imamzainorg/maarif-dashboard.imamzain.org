@@ -4,7 +4,7 @@
     <div class="p-6 rounded-2xl bg-gradient-to-l from-slate-900 via-slate-900 to-primary-950/20 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <h2 class="text-2xl font-bold text-white mb-1">مرحباً بك مجدداً، {{ authStore.user?.fullName }} 👋</h2>
-        <p class="text-slate-400 text-sm">هذه نظرة عامة على حالة تطبيق معارف سجادة وحركة المستخدمين الحالية.</p>
+        <p class="text-slate-400 text-sm">هذه نظرة عامة على حالة تطبيق معارف سجادية وحركة المستخدمين الحالية.</p>
       </div>
       <div class="flex items-center gap-2">
         <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping"></span>

@@ -11,7 +11,7 @@
       <div class="flex items-center justify-between h-16 px-4 border-b border-slate-800 bg-slate-900/50">
         <div class="flex items-center gap-2" v-if="isSidebarOpen">
           <span class="text-2xl">🕌</span>
-          <span class="font-extrabold text-lg bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent">معارف سجادة</span>
+          <span class="font-extrabold text-lg bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent">معارف سجادية</span>
         </div>
         <div class="flex items-center justify-center w-full" v-else>
           <span class="text-2xl">🕌</span>

@@ -10,7 +10,7 @@
       <div class="text-center mb-8">
         <span class="text-5xl block mb-3">🕌</span>
         <h2 class="text-2xl font-black bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent mb-1">
-          لوحة التحكم - معارف سجادة
+          لوحة التحكم - معارف سجادية
         </h2>
         <p class="text-slate-400 text-sm">أدخل معلومات حساب الإدارة لتسجيل الدخول</p>
       </div>

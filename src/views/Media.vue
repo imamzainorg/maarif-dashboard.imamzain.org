@@ -149,7 +149,7 @@ const getFileExtension = (url) => {
 
 const copyToClipboard = (url) => {
   navigator.clipboard.writeText(url)
-  alert('تم نسخ الرابط المباشر للملف بنجاح لمحافظتك!')
+  alert('تم نسخ الرابط المباشر للملف بنجاح لحافظتك!')
 }
 
 const uploadFile = async (file) => {
