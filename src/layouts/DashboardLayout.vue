@@ -14,7 +14,7 @@
           <span class="font-extrabold text-lg bg-gradient-to-l from-primary-400 to-indigo-400 bg-clip-text text-transparent">معارف سجادية</span>
         </div>
         <div class="flex items-center justify-center w-full" v-else>
-          <span class="text-2xl">🕌</span>
+          <img src="/logo.png" alt="شعار معارف سجادية" class="w-8 h-8 object-contain" />
         </div>
         
         <!-- Toggle button on Desktop -->
@@ -144,8 +144,6 @@ const links = [
   { name: 'الاختبارات والأسئلة', routeName: 'Quizzes', icon: HelpCircle, requiresSuper: false },
   { name: 'الخدمات والمعالم', routeName: 'Amenities', icon: Stethoscope, requiresSuper: false },
   { name: 'المحتوى الديني', routeName: 'ReligiousContent', icon: BookOpen, requiresSuper: false },
-  { name: 'دليل المسابقات', routeName: 'Guides', icon: Award, requiresSuper: false },
-  { name: 'بنرات الصفحة الرئيسية', routeName: 'Banners', icon: Image, requiresSuper: false },
   { name: 'إدارة المستخدمين', routeName: 'Users', icon: Users, requiresSuper: false },
   { name: 'إرسال الإشعارات', routeName: 'Notifications', icon: Bell, requiresSuper: false },
   { name: 'رفع الوسائط والملفات', routeName: 'Media', icon: FolderOpen, requiresSuper: false },

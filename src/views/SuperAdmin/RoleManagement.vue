@@ -27,27 +27,26 @@
         </div>
 
         <form @submit.prevent="handleAssignRole" class="space-y-5">
-          <!-- Target User ID -->
+          <!-- Target User Selection -->
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">رقم معرّف الحاج المستهدف (User ID)</label>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">الزائر المستهدف (صاحب الصلاحية)</label>
             <div class="flex gap-2">
               <input
-                v-model.number="assignForm.targetUserId"
-                type="number"
+                type="text"
+                readonly
                 required
-                placeholder="أدخل معرّف المستخدم (مثال: 5)"
-                class="flex-1 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm text-left"
-                dir="ltr"
+                :value="selectedUserLabel || 'لم يتم اختيار زائر بعد، اضغط على بحث...'"
+                @click="openUserSelectModal"
+                class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-primary-500 outline-none text-slate-300 text-sm cursor-pointer hover:border-primary-500 transition text-right"
               />
               <button
                 type="button"
                 @click="openUserSelectModal"
-                class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition"
+                class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition flex-shrink-0"
               >
                 بحث عن مستخدم
               </button>
             </div>
-            <p v-if="selectedUserLabel" class="text-xs text-indigo-400 font-semibold mt-1">المستخدم المختار: {{ selectedUserLabel }}</p>
           </div>
 
           <!-- New Role Name -->
@@ -163,11 +162,17 @@
             v-model="userModal.search"
             @input="searchUsers"
             type="text"
-            placeholder="ابحث بالاسم أو رقم الهاتف..."
+            placeholder="ابحث بالاسم، رقم الهاتف أو البريد الإلكتروني..."
             class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
           />
 
-          <div class="max-h-60 overflow-y-auto space-y-2 divide-y divide-slate-800/40">
+          <!-- Loading users indicator -->
+          <div v-if="userModal.loading" class="flex flex-col items-center justify-center py-12 space-y-3">
+            <Loader2 class="w-8 h-8 animate-spin text-primary-500" />
+            <span class="text-xs text-slate-500">جاري تحميل سجلات الزوار للبحث...</span>
+          </div>
+
+          <div v-else class="max-h-60 overflow-y-auto space-y-2 divide-y divide-slate-800/40">
             <div
               v-for="user in userModal.results"
               :key="user.userId"
@@ -176,13 +181,14 @@
             >
               <div>
                 <span class="font-bold text-white text-sm block">{{ user.fullName }}</span>
-                <span class="text-xs text-slate-500" dir="ltr">{{ user.phoneNumber || 'لا يوجد هاتف' }}</span>
+                <span class="text-xs text-slate-400 block" v-if="user.email">{{ user.email }}</span>
+                <span class="text-xs text-slate-550 block" dir="ltr">{{ user.phoneNumber || 'لا يوجد هاتف' }}</span>
               </div>
-              <span class="text-xs font-bold text-slate-500">معرف: #{{ user.userId }}</span>
+              <span class="text-xs font-bold text-slate-550">معرف: #{{ user.userId }}</span>
             </div>
             
             <div v-if="userModal.results.length === 0" class="py-6 text-center text-slate-600 text-xs">
-              لا توجد نتائج بحث.
+              لا توجد نتائج بحث مطابقة.
             </div>
           </div>
         </div>
@@ -217,7 +223,9 @@ const roleModal = reactive({
 
 const userModal = reactive({
   show: false,
+  loading: false,
   search: '',
+  allUsers: [],
   results: []
 })
 
@@ -235,6 +243,10 @@ const fetchRoles = async () => {
 }
 
 const handleAssignRole = async () => {
+  if (!assignForm.targetUserId) {
+    alert('يرجى اختيار الزائر المستهدف أولاً قبل تعيين الدور.')
+    return
+  }
   loading.value = true
   assignResult.value = ''
   try {
@@ -297,30 +309,40 @@ const deleteRole = async (id) => {
 }
 
 // Search users
-const openUserSelectModal = () => {
+const openUserSelectModal = async () => {
   userModal.search = ''
   userModal.results = []
   userModal.show = true
-}
-
-const searchUsers = async () => {
-  if (userModal.search.length < 2) return
+  userModal.loading = true
   try {
     const response = await axiosInstance.get('/api/admin/users', {
-      params: { limit: 10, offset: 0 }
+      params: { limit: 1000, offset: 0 }
     })
-    userModal.results = response.data.filter(u =>
-      u.fullName.toLowerCase().includes(userModal.search.toLowerCase()) ||
-      (u.phoneNumber && u.phoneNumber.includes(userModal.search))
-    )
+    userModal.allUsers = response.data
+    userModal.results = response.data
   } catch (err) {
-    console.error(err)
+    console.error('Failed to load users for selection:', err)
+  } finally {
+    userModal.loading = false
   }
+}
+
+const searchUsers = () => {
+  const query = userModal.search.toLowerCase().trim()
+  if (!query) {
+    userModal.results = userModal.allUsers
+    return
+  }
+  userModal.results = userModal.allUsers.filter(u =>
+    u.fullName.toLowerCase().includes(query) ||
+    (u.phoneNumber && u.phoneNumber.includes(query)) ||
+    (u.email && u.email.toLowerCase().includes(query))
+  )
 }
 
 const selectUser = (user) => {
   assignForm.targetUserId = user.userId
-  selectedUserLabel.value = `${user.fullName} (معرف: ${user.userId})`
+  selectedUserLabel.value = `${user.fullName} | هاتف: ${user.phoneNumber || 'غير متوفر'} | بريد: ${user.email || 'غير متوفر'}`
   userModal.show = false
 }
 </script>

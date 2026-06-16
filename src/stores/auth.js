@@ -46,6 +46,26 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    refreshSession(data) {
+      this.token = data.token
+      this.refreshToken = data.refreshToken
+      
+      // Decode token to extract role
+      const decoded = parseJwt(data.token)
+      const role = decoded ? decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded.role : 'visitor'
+      
+      this.user = {
+        userId: data.userId,
+        fullName: data.fullName,
+        email: data.email,
+        role: role?.toLowerCase()
+      }
+
+      // Persist to localStorage
+      localStorage.setItem('token', this.token)
+      localStorage.setItem('refreshToken', this.refreshToken)
+      localStorage.setItem('user', JSON.stringify(this.user))
+    },
     async login(contact, password) {
       this.loading = true
       this.error = null

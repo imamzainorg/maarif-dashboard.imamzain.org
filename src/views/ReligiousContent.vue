@@ -4,7 +4,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <h2 class="text-xl font-bold text-white">إدارة المحتوى الديني العام</h2>
-        <p class="text-slate-400 text-sm">تحكم في نصوص الزيارات، الأدعية العامة، والمقاطع الصوتية المتوفرة لعامة الحجاج بالتطبيق.</p>
+        <p class="text-slate-400 text-sm">تحكم في نصوص الزيارات، الأدعية العامة، والمقاطع الصوتية المتوفرة لعامة الزائرين بالتطبيق.</p>
       </div>
       <button
         @click="openModal(null)"
@@ -118,6 +118,11 @@
               <label class="block text-slate-300 text-sm font-semibold mb-2">اسم القارئ (اختياري)</label>
               <input v-model="modal.form.readerName" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
             </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">النص الديني (الكلام/الدعاء/الزيارة - اختياري)</label>
+            <textarea v-model="modal.form.contentText" rows="5" placeholder="اكتب نص الدعاء أو الزيارة هنا..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm leading-relaxed"></textarea>
           </div>
 
           <div>

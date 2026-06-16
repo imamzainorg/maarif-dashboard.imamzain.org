@@ -3,7 +3,7 @@
     <!-- Header Page -->
     <div>
       <h2 class="text-xl font-bold text-white">إرسال وبث الإشعارات الفورية</h2>
-      <p class="text-slate-400 text-sm">أرسل تنبيهات عاجلة، إرشادات للمشاعر، أو رسائل مخصصة للحجاج عبر خوادم Firebase FCM.</p>
+      <p class="text-slate-400 text-sm">أرسل تنبيهات عاجلة، إرشادات للمشاعر، أو رسائل مخصصة للزائرين عبر خوادم Firebase FCM.</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -47,7 +47,7 @@
             <div class="space-y-3">
               <label class="flex items-center gap-2.5 cursor-pointer">
                 <input v-model="sendToAll" type="radio" :value="true" class="w-4.5 h-4.5 accent-primary-500" />
-                <span class="text-sm font-semibold text-slate-200">بث عام (لجميع الحجاج المسجلين)</span>
+                <span class="text-sm font-semibold text-slate-200">بث عام (لجميع الزائرين المسجلين)</span>
               </label>
 
               <label class="flex items-center gap-2.5 cursor-pointer">
@@ -59,15 +59,15 @@
 
           <!-- Specific User Target Input -->
           <div v-if="!sendToAll" class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 animate-slide-up">
-            <label class="block text-slate-300 text-xs font-semibold">رقم معرّف الحاج (User ID)</label>
+            <label class="block text-slate-300 text-xs font-semibold">الزائر المستهدف (بالاسم أو الهاتف)</label>
             <div class="flex gap-2">
               <input
-                v-model.number="form.userId"
-                type="number"
-                required
-                placeholder="أدخل معرّف المستخدم (مثال: 5)"
-                class="flex-1 px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm text-left"
-                dir="ltr"
+                type="text"
+                readonly
+                :value="selectedUserLabel || 'لم يتم اختيار زائر بعد، اضغط على بحث...'"
+                @click="openUserSelectModal"
+                class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-355 text-sm cursor-pointer hover:border-primary-500 transition text-right"
+                style="color: rgb(203, 213, 225);"
               />
               <button
                 type="button"
@@ -78,6 +78,7 @@
               </button>
             </div>
             <p v-if="selectedUserLabel" class="text-xs text-indigo-400 font-semibold">المستلم المختار: {{ selectedUserLabel }}</p>
+>>>>>>> 6973ff87b308c5d8c75fd183b6bbea67c52beb9b
           </div>
 
           <!-- Content text -->
@@ -87,7 +88,7 @@
               v-model="form.contentText"
               required
               rows="5"
-              placeholder="اكتب تفاصيل التنبيه الموجه للحاج هنا..."
+              placeholder="اكتب تفاصيل التنبيه الموجه للزائر هنا..."
               class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm leading-relaxed"
             ></textarea>
           </div>
@@ -125,7 +126,7 @@
             </li>
             <li class="flex items-start gap-2">
               <span class="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0"></span>
-              <span>يتم تخزين كل إشعار مرسل تلقائياً في <strong>سجل الإشعارات المستلمة (Inbox)</strong> للحاج لكي يقرأها لاحقاً داخل التطبيق.</span>
+              <span>يتم تخزين كل إشعار مرسل تلقائياً في <strong>سجل الإشعارات المستلمة (Inbox)</strong> للزائر لكي يقرأها لاحقاً داخل التطبيق.</span>
             </li>
           </ul>
         </div>
@@ -136,7 +137,7 @@
     <div v-if="userModal.show" class="fixed inset-0 bg-black/75 z-30 flex items-center justify-center p-4">
       <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
         <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-          <h3 class="text-lg font-bold text-white">البحث عن حاج</h3>
+          <h3 class="text-lg font-bold text-white">البحث عن زائر</h3>
           <button @click="userModal.show = false" class="p-1 text-slate-500 hover:text-slate-300 rounded-lg">
             <X class="w-5 h-5" />
           </button>
@@ -147,11 +148,17 @@
             v-model="userModal.search"
             @input="searchUsers"
             type="text"
-            placeholder="ابحث باسم الحاج أو الهاتف..."
+            placeholder="ابحث بالاسم، رقم الهاتف أو البريد الإلكتروني..."
             class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
           />
 
-          <div class="max-h-60 overflow-y-auto space-y-2 divide-y divide-slate-800/40">
+          <!-- Loading users indicator -->
+          <div v-if="userModal.loading" class="flex flex-col items-center justify-center py-12 space-y-3">
+            <Loader2 class="w-8 h-8 animate-spin text-primary-500" />
+            <span class="text-xs text-slate-500">جاري تحميل سجلات الزوار للبحث...</span>
+          </div>
+
+          <div v-else class="max-h-60 overflow-y-auto space-y-2 divide-y divide-slate-800/40">
             <div
               v-for="user in userModal.results"
               :key="user.userId"
@@ -160,13 +167,14 @@
             >
               <div>
                 <span class="font-bold text-white text-sm block">{{ user.fullName }}</span>
-                <span class="text-xs text-slate-500" dir="ltr">{{ user.phoneNumber || 'لا يوجد هاتف' }}</span>
+                <span class="text-xs text-slate-400 block" v-if="user.email">{{ user.email }}</span>
+                <span class="text-xs text-slate-555 block" dir="ltr">{{ user.phoneNumber || 'لا يوجد هاتف' }}</span>
               </div>
-              <span class="text-xs font-bold text-slate-500">معرف: #{{ user.userId }}</span>
+              <span class="text-xs font-bold text-slate-555">معرف: #{{ user.userId }}</span>
             </div>
             
             <div v-if="userModal.results.length === 0" class="py-6 text-center text-slate-600 text-xs">
-              لا توجد نتائج بحث.
+              لا توجد نتائج بحث مطابقة.
             </div>
           </div>
         </div>
@@ -195,7 +203,9 @@ const form = reactive({
 
 const userModal = reactive({
   show: false,
+  loading: false,
   search: '',
+  allUsers: [],
   results: []
 })
 
@@ -227,31 +237,40 @@ const handleSend = async () => {
 }
 
 // User Selector search
-const openUserSelectModal = () => {
+const openUserSelectModal = async () => {
   userModal.search = ''
   userModal.results = []
   userModal.show = true
-}
-
-const searchUsers = async () => {
-  if (userModal.search.length < 2) return
+  userModal.loading = true
   try {
     const response = await axiosInstance.get('/api/admin/users', {
-      params: { limit: 10, offset: 0 }
+      params: { limit: 1000, offset: 0 }
     })
-    // Client-side filter for mock-search
-    userModal.results = response.data.filter(u =>
-      u.fullName.toLowerCase().includes(userModal.search.toLowerCase()) ||
-      (u.phoneNumber && u.phoneNumber.includes(userModal.search))
-    )
+    userModal.allUsers = response.data
+    userModal.results = response.data
   } catch (err) {
-    console.error(err)
+    console.error('Failed to load users for selection:', err)
+  } finally {
+    userModal.loading = false
   }
+}
+
+const searchUsers = () => {
+  const query = userModal.search.toLowerCase().trim()
+  if (!query) {
+    userModal.results = userModal.allUsers
+    return
+  }
+  userModal.results = userModal.allUsers.filter(u =>
+    u.fullName.toLowerCase().includes(query) ||
+    (u.phoneNumber && u.phoneNumber.includes(query)) ||
+    (u.email && u.email.toLowerCase().includes(query))
+  )
 }
 
 const selectUser = (user) => {
   form.userId = user.userId
-  selectedUserLabel.value = `${user.fullName} (معرف: ${user.userId})`
+  selectedUserLabel.value = `${user.fullName} | هاتف: ${user.phoneNumber || 'غير متوفر'} | بريد: ${user.email || 'غير متوفر'}`
   userModal.show = false
 }
 </script>

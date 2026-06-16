@@ -57,16 +57,7 @@ const routes = [
         name: 'Media',
         component: () => import('@/views/Media.vue')
       },
-      {
-        path: 'guides',
-        name: 'Guides',
-        component: () => import('@/views/Guides.vue')
-      },
-      {
-        path: 'banners',
-        name: 'Banners',
-        component: () => import('@/views/Banners.vue')
-      },
+
       {
         path: 'super/roles',
         name: 'RoleManagement',
