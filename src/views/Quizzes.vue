@@ -320,7 +320,7 @@ const submitQuestion = async () => {
     }
     questionModal.show = false
   } catch (err) {
-    alert('حدث خطأ أثناء حفظ السؤال.')
+    alert(err?.response?.data?.message || err?.message || 'حدث خطأ أثناء حفظ السؤال.')
   }
 }
 

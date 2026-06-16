@@ -354,7 +354,7 @@ const submitStation = async () => {
     stationModal.show = false
     await stationsStore.fetchStations()
   } catch (err) {
-    alert('فشل حفظ المحطة. يرجى مراجعة قيم المدخلات.')
+    alert(err?.response?.data?.message || err?.message || 'فشل حفظ المحطة. يرجى مراجعة قيم المدخلات.')
   }
 }
 
