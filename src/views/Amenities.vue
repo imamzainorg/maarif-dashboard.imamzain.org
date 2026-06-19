@@ -77,8 +77,8 @@
 
         <!-- Info details -->
         <div class="p-5 flex-1 flex flex-col space-y-3">
-          <h3 class="font-bold text-white text-md">{{ amenity.title }}</h3>
-          <p class="text-slate-400 text-xs leading-relaxed line-clamp-2 flex-1">{{ amenity.description || 'لا يوجد وصف مضاف لهذا المعلم.' }}</p>
+          <h3 class="font-bold text-white text-md">{{ amenity.titleAr || amenity.title }}</h3>
+          <p class="text-slate-400 text-xs leading-relaxed line-clamp-2 flex-1">{{ amenity.descriptionAr || amenity.description || 'لا يوجد وصف مضاف لهذا المعلم.' }}</p>
           
           <div class="flex items-center justify-between text-xs text-slate-500 bg-slate-950/40 p-2.5 rounded-xl border border-slate-900">
             <span>العمود الأقرب: <strong class="text-indigo-400">#{{ amenity.poleNumber }}</strong></span>
@@ -107,13 +107,21 @@
 
     <!-- Amenity CRUD Modal -->
     <div v-if="modal.show" class="fixed inset-0 bg-black/75 z-30 flex items-center justify-center p-4">
-      <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+      <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6 max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-bold text-white">{{ modal.isEdit ? 'تعديل المعلم' : 'إضافة معلم/خدمة جديدة' }}</h3>
 
         <form @submit.prevent="submit" class="space-y-4">
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">اسم المعلم / الخدمة</label>
-            <input v-model="modal.form.title" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            <label class="block text-slate-300 text-sm font-semibold mb-2">اسم المعلم / الخدمة (العربية) *</label>
+            <input v-model="modal.form.titleAr" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">اسم المعلم / الخدمة (الانجليزية)</label>
+            <input v-model="modal.form.titleEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">اسم المعلم / الخدمة (الفارسية)</label>
+            <input v-model="modal.form.titleFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -132,8 +140,16 @@
           </div>
 
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">وصف الخدمة</label>
-            <textarea v-model="modal.form.description" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"></textarea>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">وصف الخدمة (العربية) *</label>
+            <textarea v-model="modal.form.descriptionAr" required rows="3" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"></textarea>
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">وصف الخدمة (الانجليزية)</label>
+            <textarea v-model="modal.form.descriptionEn" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"></textarea>
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">وصف الخدمة (الفارسية)</label>
+            <textarea v-model="modal.form.descriptionFa" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"></textarea>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -238,10 +254,14 @@ const modal = reactive({
   isEdit: false,
   amenityId: null,
   form: {
-    title: '',
+    titleAr: '',
+    titleEn: '',
+    titleFa: '',
     category: 'medical',
     poleNumber: 1,
-    description: '',
+    descriptionAr: '',
+    descriptionEn: '',
+    descriptionFa: '',
     latitude: 21.4225,
     longitude: 39.8262,
     imageUrl: ''
@@ -254,7 +274,8 @@ onMounted(() => {
 
 const filteredAmenities = computed(() => {
   return amenitiesStore.amenities.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(filters.search.toLowerCase())
+    const titleVal = item.titleAr || item.title || ''
+    const matchesSearch = titleVal.toLowerCase().includes(filters.search.toLowerCase())
     const matchesCategory = filters.category === 'all' || item.category === filters.category
     return matchesSearch && matchesCategory
   })
@@ -292,15 +313,31 @@ const openModal = (amenity = null) => {
   if (amenity) {
     modal.isEdit = true
     modal.amenityId = amenity.amenityId
-    modal.form = { ...amenity }
+    modal.form = {
+      titleAr: amenity.titleAr || amenity.title,
+      titleEn: amenity.titleEn || '',
+      titleFa: amenity.titleFa || '',
+      category: amenity.category,
+      poleNumber: amenity.poleNumber,
+      descriptionAr: amenity.descriptionAr || amenity.description || '',
+      descriptionEn: amenity.descriptionEn || '',
+      descriptionFa: amenity.descriptionFa || '',
+      latitude: amenity.latitude,
+      longitude: amenity.longitude,
+      imageUrl: amenity.imageUrl || ''
+    }
   } else {
     modal.isEdit = false
     modal.amenityId = null
     modal.form = {
-      title: '',
+      titleAr: '',
+      titleEn: '',
+      titleFa: '',
       category: 'medical',
       poleNumber: 1,
-      description: '',
+      descriptionAr: '',
+      descriptionEn: '',
+      descriptionFa: '',
       latitude: 21.4225,
       longitude: 39.8262,
       imageUrl: ''

@@ -59,14 +59,14 @@
             🔊 {{ content.contentType }}
           </span>
 
-          <span v-if="content.readerName" class="text-xs text-slate-500 font-semibold">
-            القارئ: {{ content.readerName }}
+          <span v-if="content.readerNameAr || content.readerName" class="text-xs text-slate-500 font-semibold">
+            القارئ: {{ content.readerNameAr || content.readerName }}
           </span>
         </div>
 
         <!-- Info details -->
         <div class="flex-1 space-y-2">
-          <h3 class="font-bold text-white text-md">{{ content.title }}</h3>
+          <h3 class="font-bold text-white text-md">{{ content.titleAr || content.title }}</h3>
           <p v-if="content.contentText" class="text-slate-400 text-xs leading-relaxed line-clamp-4 leading-loose">{{ content.contentText }}</p>
         </div>
 
@@ -105,18 +105,35 @@
 
         <form @submit.prevent="submit" class="space-y-4">
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">العنوان</label>
-            <input v-model="modal.form.title" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            <label class="block text-slate-300 text-sm font-semibold mb-2">العنوان (العربية) *</label>
+            <input v-model="modal.form.titleAr" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">العنوان (الانجليزية)</label>
+            <input v-model="modal.form.titleEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">العنوان (الفارسية)</label>
+            <input v-model="modal.form.titleFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">تصنيف المحتوى (النوع)</label>
+            <input v-model="modal.form.contentType" type="text" required placeholder="مثال: قصائد، زيارات، أدعية" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-slate-300 text-sm font-semibold mb-2">تصنيف المحتوى (النوع)</label>
-              <input v-model="modal.form.contentType" type="text" required placeholder="مثال: قصائد، زيارات، أدعية" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+              <label class="block text-slate-300 text-sm font-semibold mb-2">اسم القارئ (العربية)</label>
+              <input v-model="modal.form.readerNameAr" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
             </div>
             <div>
-              <label class="block text-slate-300 text-sm font-semibold mb-2">اسم القارئ (اختياري)</label>
-              <input v-model="modal.form.readerName" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+              <label class="block text-slate-350 text-sm font-semibold mb-2">اسم القارئ (الانجليزية)</label>
+              <input v-model="modal.form.readerNameEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label class="block text-slate-350 text-sm font-semibold mb-2">اسم القارئ (الفارسية)</label>
+              <input v-model="modal.form.readerNameFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
             </div>
           </div>
 
@@ -216,11 +233,15 @@ const modal = reactive({
   isEdit: false,
   contentId: null,
   form: {
-    title: '',
+    titleAr: '',
+    titleEn: '',
+    titleFa: '',
     contentType: 'قصائد',
     contentText: '',
     audioUrl: '',
-    readerName: ''
+    readerNameAr: '',
+    readerNameEn: '',
+    readerNameFa: ''
   }
 })
 
@@ -235,7 +256,8 @@ const uniqueCategories = computed(() => {
 
 const filteredContents = computed(() => {
   return contentStore.contents.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(filters.search.toLowerCase())
+    const titleVal = item.titleAr || item.title || ''
+    const matchesSearch = titleVal.toLowerCase().includes(filters.search.toLowerCase())
     const matchesType = filters.type === 'all' || item.contentType === filters.type
     return matchesSearch && matchesType
   })
@@ -245,16 +267,30 @@ const openModal = (content = null) => {
   if (content) {
     modal.isEdit = true
     modal.contentId = content.contentId
-    modal.form = { ...content }
+    modal.form = {
+      titleAr: content.titleAr || content.title,
+      titleEn: content.titleEn || '',
+      titleFa: content.titleFa || '',
+      contentType: content.contentType,
+      contentText: content.contentText,
+      audioUrl: content.audioUrl,
+      readerNameAr: content.readerNameAr || content.readerName || '',
+      readerNameEn: content.readerNameEn || '',
+      readerNameFa: content.readerNameFa || ''
+    }
   } else {
     modal.isEdit = false
     modal.contentId = null
     modal.form = {
-      title: '',
+      titleAr: '',
+      titleEn: '',
+      titleFa: '',
       contentType: 'قصائد',
       contentText: '',
       audioUrl: '',
-      readerName: ''
+      readerNameAr: '',
+      readerNameEn: '',
+      readerNameFa: ''
     }
   }
   modal.show = true
@@ -275,8 +311,9 @@ const submit = async () => {
 }
 
 const confirmDelete = async (content) => {
+  const titleVal = content.titleAr || content.title
   const message = `🚨 تحذير هام! 🚨
-هل أنت متأكد من حذف محتوى "${content.title}"؟ 
+هل أنت متأكد من حذف محتوى "${titleVal}"؟ 
 هذا الإجراء سيقوم بحذف المحتوى الديني نهائياً (Hard Delete) من قاعدة البيانات ولن تتمكن من استعادته.`
   
   if (confirm(message)) {

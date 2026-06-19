@@ -76,7 +76,7 @@
           </div>
 
           <!-- Question title text -->
-          <h4 class="font-extrabold text-white text-md">{{ question.questionText }}</h4>
+          <h4 class="font-extrabold text-white text-md">{{ question.questionTextAr || question.questionText }}</h4>
 
           <!-- Options Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
@@ -93,7 +93,7 @@
               <div class="flex items-center gap-3">
                 <CheckCircle2 v-if="option.isCorrect" class="w-5 h-5 text-emerald-500 flex-shrink-0" />
                 <Circle v-else class="w-5 h-5 text-slate-700 flex-shrink-0" />
-                <span class="font-semibold text-sm">{{ option.optionText }}</span>
+                <span class="font-semibold text-sm">{{ option.optionTextAr || option.optionText }}</span>
               </div>
 
               <!-- Option mini CRUD -->
@@ -129,8 +129,16 @@
           <!-- Text and Configs -->
           <div class="space-y-4">
             <div>
-              <label class="block text-slate-300 text-sm font-semibold mb-2">نص السؤال</label>
-              <input v-model="questionModal.form.questionText" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+              <label class="block text-slate-300 text-sm font-semibold mb-2">نص السؤال (العربية) *</label>
+              <input v-model="questionModal.form.questionTextAr" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label class="block text-slate-350 text-sm font-semibold mb-2">نص السؤال (الانجليزية)</label>
+              <input v-model="questionModal.form.questionTextEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label class="block text-slate-350 text-sm font-semibold mb-2">نص السؤال (الفارسية)</label>
+              <input v-model="questionModal.form.questionTextFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -155,23 +163,41 @@
             </div>
 
             <div class="space-y-3">
-              <div v-for="(opt, idx) in questionModal.form.options" :key="idx" class="flex items-center gap-3">
-                <input
-                  v-model="opt.optionText"
-                  type="text"
-                  required
-                  :placeholder="'الخيار رقم ' + (idx + 1)"
-                  class="flex-1 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
-                />
-                
-                <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
-                  <input v-model="opt.isCorrect" type="checkbox" class="w-4 h-4 accent-emerald-500 rounded bg-slate-900 border-slate-800" />
-                  <span class="text-xs text-slate-400">إجابة صحيحة</span>
-                </label>
+              <div v-for="(opt, idx) in questionModal.form.options" :key="idx" class="p-4 rounded-xl border border-slate-800 bg-slate-900/40 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-500">الخيار رقم {{ idx + 1 }}</span>
+                  <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input v-model="opt.isCorrect" type="checkbox" class="w-4 h-4 accent-emerald-500 rounded bg-slate-900 border-slate-800" />
+                      <span class="text-xs text-slate-400">إجابة صحيحة</span>
+                    </label>
+                    <button type="button" @click="removeOptionField(idx)" :disabled="questionModal.form.options.length <= 2" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg disabled:opacity-30">
+                      <X class="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
 
-                <button type="button" @click="removeOptionField(idx)" :disabled="questionModal.form.options.length <= 2" class="p-2 text-rose-500 hover:bg-rose-500/10 rounded-lg disabled:opacity-30">
-                  <X class="w-4 h-4" />
-                </button>
+                <div class="space-y-2">
+                  <input
+                    v-model="opt.optionTextAr"
+                    type="text"
+                    required
+                    placeholder="نص الخيار بالعربية *"
+                    class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+                  />
+                  <input
+                    v-model="opt.optionTextEn"
+                    type="text"
+                    placeholder="نص الخيار بالانجليزية"
+                    class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+                  />
+                  <input
+                    v-model="opt.optionTextFa"
+                    type="text"
+                    placeholder="نص الخيار بالفارسية"
+                    class="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -191,8 +217,16 @@
 
         <form @submit.prevent="submitOption" class="space-y-4">
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">نص خيار الإجابة</label>
-            <input v-model="optionModal.form.optionText" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            <label class="block text-slate-300 text-sm font-semibold mb-2">نص خيار الإجابة (العربية) *</label>
+            <input v-model="optionModal.form.optionTextAr" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">نص خيار الإجابة (الانجليزية)</label>
+            <input v-model="optionModal.form.optionTextEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">نص خيار الإجابة (الفارسية)</label>
+            <input v-model="optionModal.form.optionTextFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
           </div>
           <div class="flex items-center gap-2">
             <input v-model="optionModal.form.isCorrect" type="checkbox" id="editIsCorrect" class="w-4.5 h-4.5 accent-emerald-500 rounded bg-slate-900 border-slate-800" />
@@ -226,12 +260,14 @@ const questionModal = reactive({
   isEdit: false,
   questionId: null,
   form: {
-    questionText: '',
+    questionTextAr: '',
+    questionTextEn: '',
+    questionTextFa: '',
     points: 5,
     sortOrder: 1,
     options: [
-      { optionText: '', isCorrect: true },
-      { optionText: '', isCorrect: false }
+      { optionTextAr: '', optionTextEn: '', optionTextFa: '', isCorrect: true },
+      { optionTextAr: '', optionTextEn: '', optionTextFa: '', isCorrect: false }
     ]
   }
 })
@@ -242,7 +278,9 @@ const optionModal = reactive({
   questionId: null,
   optionId: null,
   form: {
-    optionText: '',
+    optionTextAr: '',
+    optionTextEn: '',
+    optionTextFa: '',
     isCorrect: false
   }
 })
@@ -266,12 +304,14 @@ const openQuestionModal = () => {
   questionModal.isEdit = false
   questionModal.questionId = null
   questionModal.form = {
-    questionText: '',
+    questionTextAr: '',
+    questionTextEn: '',
+    questionTextFa: '',
     points: 5,
     sortOrder: quizzesStore.questions.length + 1,
     options: [
-      { optionText: '', isCorrect: true },
-      { optionText: '', isCorrect: false }
+      { optionTextAr: '', optionTextEn: '', optionTextFa: '', isCorrect: true },
+      { optionTextAr: '', optionTextEn: '', optionTextFa: '', isCorrect: false }
     ]
   }
   questionModal.show = true
@@ -281,7 +321,9 @@ const openEditQuestionModal = (question) => {
   questionModal.isEdit = true
   questionModal.questionId = question.questionId
   questionModal.form = {
-    questionText: question.questionText,
+    questionTextAr: question.questionTextAr || question.questionText,
+    questionTextEn: question.questionTextEn || '',
+    questionTextFa: question.questionTextFa || '',
     points: question.points,
     sortOrder: question.sortOrder,
     options: []
@@ -290,7 +332,7 @@ const openEditQuestionModal = (question) => {
 }
 
 const addOptionField = () => {
-  questionModal.form.options.push({ optionText: '', isCorrect: false })
+  questionModal.form.options.push({ optionTextAr: '', optionTextEn: '', optionTextFa: '', isCorrect: false })
 }
 
 const removeOptionField = (idx) => {
@@ -301,7 +343,9 @@ const submitQuestion = async () => {
   try {
     if (questionModal.isEdit) {
       await quizzesStore.updateQuestion(selectedStationId.value, questionModal.questionId, {
-        questionText: questionModal.form.questionText,
+        questionTextAr: questionModal.form.questionTextAr,
+        questionTextEn: questionModal.form.questionTextEn,
+        questionTextFa: questionModal.form.questionTextFa,
         points: questionModal.form.points,
         sortOrder: questionModal.form.sortOrder
       })
@@ -339,7 +383,9 @@ const openOptionModal = (question, option) => {
   optionModal.questionId = question.questionId
   optionModal.optionId = option.optionId
   optionModal.form = {
-    optionText: option.optionText,
+    optionTextAr: option.optionTextAr || option.optionText,
+    optionTextEn: option.optionTextEn || '',
+    optionTextFa: option.optionTextFa || '',
     isCorrect: option.isCorrect
   }
   optionModal.show = true

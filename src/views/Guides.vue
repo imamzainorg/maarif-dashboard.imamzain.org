@@ -72,8 +72,8 @@
         <!-- Guide Body -->
         <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
           <div class="space-y-2">
-            <h4 class="font-bold text-white text-md line-clamp-1 leading-snug">{{ guide.title }}</h4>
-            <p class="text-xs text-slate-450 line-clamp-3 leading-relaxed whitespace-pre-line">{{ guide.contentText }}</p>
+            <h4 class="font-bold text-white text-md line-clamp-1 leading-snug">{{ guide.titleAr || guide.title }}</h4>
+            <p class="text-xs text-slate-450 line-clamp-3 leading-relaxed whitespace-pre-line">{{ guide.contentTextAr || guide.contentText }}</p>
           </div>
 
           <div class="flex items-center justify-between border-t border-slate-800/60 pt-4">
@@ -87,7 +87,7 @@
                 <Edit3 class="w-4 h-4" />
               </button>
               <button
-                @click="deleteGuide(guide.id, guide.title)"
+                @click="deleteGuide(guide.id, guide.titleAr || guide.title)"
                 class="p-2 rounded-xl bg-slate-900 border border-slate-850 hover:bg-slate-800 text-slate-300 hover:text-rose-450 transition"
                 title="حذف"
               >
@@ -101,7 +101,7 @@
 
     <!-- Add/Edit Modal -->
     <div v-if="showModal" class="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl relative space-y-4 text-right">
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl relative space-y-4 text-right max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
           <h3 class="font-bold text-white text-md">
             {{ isEdit ? 'تعديل دليل المسابقة' : 'إضافة دليل مسابقة جديد' }}
@@ -113,13 +113,29 @@
 
         <form @submit.prevent="saveGuide" class="space-y-4 text-slate-350">
           <div class="space-y-1">
-            <label class="text-xs font-bold text-slate-400 block">عنوان الدليل</label>
+            <label class="text-xs font-bold text-slate-400 block">عنوان الدليل (العربية) *</label>
             <input
-              v-model="form.title"
+              v-model="form.titleAr"
               type="text"
               placeholder="مثال: شروط ومعايير المسابقة الكبرى"
               class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500"
               required
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-400 block">عنوان الدليل (الانجليزية)</label>
+            <input
+              v-model="form.titleEn"
+              type="text"
+              class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-400 block">عنوان الدليل (الفارسية)</label>
+            <input
+              v-model="form.titleFa"
+              type="text"
+              class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
@@ -157,13 +173,29 @@
           </div>
 
           <div class="space-y-1">
-            <label class="text-xs font-bold text-slate-400 block">محتوى الدليل بالتفصيل</label>
+            <label class="text-xs font-bold text-slate-400 block">محتوى الدليل بالتفصيل (العربية) *</label>
             <textarea
-              v-model="form.contentText"
-              rows="6"
+              v-model="form.contentTextAr"
+              rows="4"
               placeholder="اكتب تفاصيل الدليل وشروطه ونقاط التقييم هنا..."
               class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500 leading-relaxed"
               required
+            ></textarea>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-400 block">محتوى الدليل بالتفصيل (الانجليزية)</label>
+            <textarea
+              v-model="form.contentTextEn"
+              rows="4"
+              class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500 leading-relaxed"
+            ></textarea>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-400 block">محتوى الدليل بالتفصيل (الفارسية)</label>
+            <textarea
+              v-model="form.contentTextFa"
+              rows="4"
+              class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500 leading-relaxed"
             ></textarea>
           </div>
 
@@ -204,8 +236,12 @@ const isEdit = ref(false)
 const editingId = ref(null)
 const submitting = ref(false)
 const form = ref({
-  title: '',
-  contentText: '',
+  titleAr: '',
+  titleEn: '',
+  titleFa: '',
+  contentTextAr: '',
+  contentTextEn: '',
+  contentTextFa: '',
   imageUrl: '',
   displayOrder: 0,
   isActive: true
@@ -232,8 +268,12 @@ const openAddModal = () => {
   isEdit.value = false
   editingId.value = null
   form.value = {
-    title: '',
-    contentText: '',
+    titleAr: '',
+    titleEn: '',
+    titleFa: '',
+    contentTextAr: '',
+    contentTextEn: '',
+    contentTextFa: '',
     imageUrl: '',
     displayOrder: 0,
     isActive: true
@@ -245,8 +285,12 @@ const openEditModal = (guide) => {
   isEdit.value = true
   editingId.value = guide.id
   form.value = {
-    title: guide.title,
-    contentText: guide.contentText,
+    titleAr: guide.titleAr || guide.title,
+    titleEn: guide.titleEn || '',
+    titleFa: guide.titleFa || '',
+    contentTextAr: guide.contentTextAr || guide.contentText,
+    contentTextEn: guide.contentTextEn || '',
+    contentTextFa: guide.contentTextFa || '',
     imageUrl: guide.imageUrl,
     displayOrder: guide.displayOrder,
     isActive: guide.isActive

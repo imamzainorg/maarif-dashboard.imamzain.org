@@ -54,7 +54,7 @@
               >
                 <td class="py-4 font-bold text-slate-500">#{{ station.sortOrder }}</td>
                 <td class="py-4">
-                  <span class="font-bold text-white block">{{ station.title }}</span>
+                  <span class="font-bold text-white block">{{ station.titleAr || station.title }}</span>
                   <span class="text-xs text-slate-500">Lat: {{ station.latitude }}, Lng: {{ station.longitude }}</span>
                 </td>
                 <td class="py-4 text-center font-semibold text-indigo-400">من {{ station.startPole }} إلى {{ station.endPole }} (العمود: {{ station.pole }})</td>
@@ -84,7 +84,7 @@
       <div v-if="selectedStation" class="lg:col-span-5 glass-panel p-6 rounded-2xl space-y-6 animate-fade-in">
         <div class="flex items-center justify-between border-b border-slate-800 pb-4">
           <div>
-            <h3 class="text-lg font-bold text-white">{{ selectedStation.title }}</h3>
+            <h3 class="text-lg font-bold text-white">{{ selectedStation.titleAr || selectedStation.title }}</h3>
             <p class="text-slate-400 text-xs">إدارة الأذكار التابعة للمحطة</p>
           </div>
           <button @click="selectedStation = null" class="p-1 text-slate-500 hover:text-slate-300 rounded-lg">
@@ -122,8 +122,8 @@
                 </button>
               </div>
             </div>
-            <h4 class="font-bold text-white">{{ dhikr.title }}</h4>
-            <p class="text-slate-400 text-xs line-clamp-3 leading-relaxed">{{ dhikr.contentText }}</p>
+            <h4 class="font-bold text-white">{{ dhikr.titleAr || dhikr.title }}</h4>
+            <p class="text-slate-400 text-xs line-clamp-3 leading-relaxed">{{ dhikr.contentTextAr || dhikr.contentText }}</p>
             <div v-if="dhikr.audioUrl" class="flex items-center gap-2 pt-2 border-t border-slate-800/40">
               <Volume2 class="w-3.5 h-3.5 text-primary-400" />
               <span class="text-xs text-primary-400 truncate max-w-[200px]" :title="dhikr.audioUrl">ملف صوتي مرفق</span>
@@ -144,8 +144,16 @@
 
         <form @submit.prevent="submitStation" class="space-y-4">
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">اسم المحطة</label>
-            <input v-model="stationModal.form.title" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            <label class="block text-slate-300 text-sm font-semibold mb-2">اسم المحطة (العربية) *</label>
+            <input v-model="stationModal.form.titleAr" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">اسم المحطة (الانجليزية)</label>
+            <input v-model="stationModal.form.titleEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">اسم المحطة (الفارسية)</label>
+            <input v-model="stationModal.form.titleFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
           </div>
           <div class="grid grid-cols-3 gap-4">
             <div>
@@ -186,17 +194,33 @@
 
     <!-- Dhikr Form Modal -->
     <div v-if="dhikrModal.show" class="fixed inset-0 bg-black/75 z-30 flex items-center justify-center p-4">
-      <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+      <div class="w-full max-w-lg glass-panel p-6 rounded-2xl border border-slate-800 space-y-6 max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-bold text-white">{{ dhikrModal.isEdit ? 'تعديل ذكر/دعاء' : 'إضافة ذكر جديد' }}</h3>
 
         <form @submit.prevent="submitDhikr" class="space-y-4">
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">عنوان الذكر</label>
-            <input v-model="dhikrModal.form.title" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            <label class="block text-slate-300 text-sm font-semibold mb-2">عنوان الذكر (العربية) *</label>
+            <input v-model="dhikrModal.form.titleAr" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
           </div>
           <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">النص الديني للذكر</label>
-            <textarea v-model="dhikrModal.form.contentText" required rows="5" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm leading-relaxed"></textarea>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">عنوان الذكر (الانجليزية)</label>
+            <input v-model="dhikrModal.form.titleEn" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">عنوان الذكر (الفارسية)</label>
+            <input v-model="dhikrModal.form.titleFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">النص الديني للذكر (العربية) *</label>
+            <textarea v-model="dhikrModal.form.contentTextAr" required rows="4" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm leading-relaxed"></textarea>
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">النص الديني للذكر (الانجليزية)</label>
+            <textarea v-model="dhikrModal.form.contentTextEn" rows="4" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm leading-relaxed"></textarea>
+          </div>
+          <div>
+            <label class="block text-slate-350 text-sm font-semibold mb-2">النص الديني للذكر (الفارسية)</label>
+            <textarea v-model="dhikrModal.form.contentTextFa" rows="4" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm leading-relaxed"></textarea>
           </div>
           <div>
             <label class="block text-slate-300 text-sm font-semibold mb-2">ملف الصوت (Audio File - اختياري)</label>
@@ -290,7 +314,9 @@ const stationModal = reactive({
   isEdit: false,
   stationId: null,
   form: {
-    title: '',
+    titleAr: '',
+    titleEn: '',
+    titleFa: '',
     startPole: 1,
     endPole: 10,
     pole: 1,
@@ -306,8 +332,12 @@ const dhikrModal = reactive({
   isEdit: false,
   rightId: null,
   form: {
-    title: '',
-    contentText: '',
+    titleAr: '',
+    titleEn: '',
+    titleFa: '',
+    contentTextAr: '',
+    contentTextEn: '',
+    contentTextFa: '',
     audioUrl: '',
     sortOrder: 1
   }
@@ -327,12 +357,24 @@ const openStationModal = (station = null) => {
   if (station) {
     stationModal.isEdit = true
     stationModal.stationId = station.stationId
-    stationModal.form = { ...station }
+    stationModal.form = {
+      titleAr: station.titleAr || station.title,
+      titleEn: station.titleEn || '',
+      titleFa: station.titleFa || '',
+      startPole: station.startPole,
+      endPole: station.endPole,
+      pole: station.pole,
+      latitude: station.latitude,
+      longitude: station.longitude,
+      sortOrder: station.sortOrder
+    }
   } else {
     stationModal.isEdit = false
     stationModal.stationId = null
     stationModal.form = {
-      title: '',
+      titleAr: '',
+      titleEn: '',
+      titleFa: '',
       startPole: 1,
       endPole: 10,
       pole: 1,
@@ -353,13 +395,16 @@ const submitStation = async () => {
     }
     stationModal.show = false
     await stationsStore.fetchStations()
+    if (selectedStation.value?.stationId === stationModal.stationId) {
+      selectedStation.value = stationsStore.stations.find(s => s.stationId === stationModal.stationId) || selectedStation.value
+    }
   } catch (err) {
     alert(err?.response?.data?.message || err?.message || 'فشل حفظ المحطة. يرجى مراجعة قيم المدخلات.')
   }
 }
 
 const confirmDeleteStation = async (station) => {
-  if (confirm(`هل أنت متأكد من حذف محطة "${station.title}"؟ سيقوم هذا بحذف ناعم للمحطة.`)) {
+  if (confirm(`هل أنت متأكد من حذف محطة "${station.titleAr || station.title}"؟ سيقوم هذا بحذف ناعم للمحطة.`)) {
     try {
       await stationsStore.deleteStation(station.stationId)
       if (selectedStation.value?.stationId === station.stationId) {
@@ -376,13 +421,26 @@ const openDhikrModal = (dhikr = null) => {
   if (dhikr) {
     dhikrModal.isEdit = true
     dhikrModal.rightId = dhikr.rightId
-    dhikrModal.form = { ...dhikr }
+    dhikrModal.form = {
+      titleAr: dhikr.titleAr || dhikr.title,
+      titleEn: dhikr.titleEn || '',
+      titleFa: dhikr.titleFa || '',
+      contentTextAr: dhikr.contentTextAr || dhikr.contentText,
+      contentTextEn: dhikr.contentTextEn || '',
+      contentTextFa: dhikr.contentTextFa || '',
+      audioUrl: dhikr.audioUrl || '',
+      sortOrder: dhikr.sortOrder
+    }
   } else {
     dhikrModal.isEdit = false
     dhikrModal.rightId = null
     dhikrModal.form = {
-      title: '',
-      contentText: '',
+      titleAr: '',
+      titleEn: '',
+      titleFa: '',
+      contentTextAr: '',
+      contentTextEn: '',
+      contentTextFa: '',
       audioUrl: '',
       sortOrder: stationsStore.currentStationDhikrs.length + 1
     }

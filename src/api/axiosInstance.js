@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from '@/router'
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://maarif-api.imamzain.org',
+  baseURL: import.meta.env.VITE_API_URL || 'https://192.168.0.182:7091',
   headers: {
     'Content-Type': 'application/json',
   },
