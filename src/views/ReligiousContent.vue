@@ -117,9 +117,19 @@
             <input v-model="modal.form.titleFa" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
           </div>
 
-          <div>
-            <label class="block text-slate-300 text-sm font-semibold mb-2">تصنيف المحتوى (النوع)</label>
-            <input v-model="modal.form.contentType" type="text" required placeholder="مثال: قصائد، زيارات، أدعية" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-slate-300 text-sm font-semibold mb-2">تصنيف المحتوى (العربية) *</label>
+              <input v-model="modal.form.contentType" type="text" required placeholder="مثال: قصائد، زيارات، أدعية" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label class="block text-slate-350 text-sm font-semibold mb-2">تصنيف المحتوى (الانجليزية)</label>
+              <input v-model="modal.form.contentTypeEn" type="text" placeholder="e.g. Supplications, Visitations" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label class="block text-slate-350 text-sm font-semibold mb-2">تصنيف المحتوى (الفارسية)</label>
+              <input v-model="modal.form.contentTypeFa" type="text" placeholder="مثال: ادعیه، زیارات" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 focus:border-primary-500 outline-none text-white text-sm" />
+            </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -237,6 +247,8 @@ const modal = reactive({
     titleEn: '',
     titleFa: '',
     contentType: 'قصائد',
+    contentTypeEn: '',
+    contentTypeFa: '',
     contentText: '',
     audioUrl: '',
     readerNameAr: '',
@@ -272,6 +284,8 @@ const openModal = (content = null) => {
       titleEn: content.titleEn || '',
       titleFa: content.titleFa || '',
       contentType: content.contentType,
+      contentTypeEn: content.contentTypeEn || '',
+      contentTypeFa: content.contentTypeFa || '',
       contentText: content.contentText,
       audioUrl: content.audioUrl,
       readerNameAr: content.readerNameAr || content.readerName || '',
@@ -286,6 +300,8 @@ const openModal = (content = null) => {
       titleEn: '',
       titleFa: '',
       contentType: 'قصائد',
+      contentTypeEn: '',
+      contentTypeFa: '',
       contentText: '',
       audioUrl: '',
       readerNameAr: '',
